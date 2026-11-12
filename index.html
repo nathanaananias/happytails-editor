@@ -6,7 +6,7 @@
   <title>Happy Tails Smart — Protótipo Colaborativo (WebSocket)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <!-- Biblioteca leve MQTT sobre WebSocket (sem backend/sem API key) -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <link rel="stylesheet" href="style.css" />
@@ -84,31 +84,16 @@
       </ul>
     </aside>
 
-    <!-- FOLHA A4 TIMBRADA -->
+    <!-- FOLHA A4 TIMBRADA (LAYOUT EXATO DO EXEMPLO ATA.DOCX.HTML) -->
     <section class="page-wrapper">
       <div class="a4-sheet">
         
-        <!-- CABEÇALHO -->
-        <div class="letterhead-header">
-          <div class="logo-area">
-            <img src="logo-happytails.png" alt="Happy Tails" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';" />
-            <div id="fallbackLogo" class="fallback-logo">
-              <div class="logo-badge">🐾</div>
-              <div>
-                <span class="logo-title">Happy Tails</span>
-                <span class="logo-subtitle">CRECHE CANINA INTELIGENTE</span>
-              </div>
-            </div>
-          </div>
-          <div class="header-meta">
-            <p class="company-name">Happy Tails Smart, Lda.</p>
-            <p class="tagline">Sempre perto do seu melhor amigo, onde quer que esteja</p>
-          </div>
-        </div>
+        <!-- CABEÇALHO: LOGO À DIREITA (150x89px) + BORDA INFERIOR LARANJA (#e76f2a) -->
+        <header class="letterhead-header">
+          <img src="images/image1.png" alt="Logo Happy Tails" title="Logo" class="header-logo" />
+        </header>
 
-        <div class="header-accent-bar"></div>
-
-        <!-- CORPO DO DOCUMENTO -->
+        <!-- CORPO EDITÁVEL DO DOCUMENTO -->
         <div id="editor" class="document-body" contenteditable="false" oninput="transmitirEstado()">
           <h1>ATA DE REUNIÃO</h1>
           <p><strong>Data:</strong> 13 de novembro de 2026 &nbsp;|&nbsp; <strong>Local:</strong> Coimbra</p>
@@ -119,13 +104,16 @@
         <!-- CARIMBOS DE APROVAÇÃO NO DOCUMENTO -->
         <div id="docApprovalsStamp" class="doc-stamps"></div>
 
-        <!-- RODAPÉ -->
+        <!-- RODAPÉ: BORDA SUPERIOR (#e9e4dc) + DADOS EMPRESARIAIS + PATA DECORATIVA (70x69px) -->
         <footer class="letterhead-footer">
-          <div class="footer-line"></div>
-          <p class="footer-company"><strong>Happy Tails Smart, Lda.</strong></p>
-          <p class="footer-contacts">
-            happytails.smart@gmail.com &nbsp;|&nbsp; Coimbra, Portugal
-          </p>
+          <div class="footer-top-row">
+            <div class="footer-info-block">
+              <p class="footer-company">Happy Tails Smart, Lda.</p>
+              <p class="footer-contact">happytails.smart@gmail.com</p>
+              <p class="footer-contact">[Telefone] &nbsp;|&nbsp; [Morada, Código Postal, Localidade]</p>
+            </div>
+            <img src="images/image2.png" alt="Pata decorativa" title="Pata" class="footer-paw" />
+          </div>
         </footer>
 
       </div>

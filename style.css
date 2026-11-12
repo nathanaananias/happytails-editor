@@ -1,8 +1,11 @@
 :root {
+  --laranja-timbre: #e76f2a;
   --laranja: #F2811D;
   --terracota: #E2481A;
   --dourado: #F7A21C;
   --marrom-cafe: #3A1700;
+  --marrom-rodape: #5a3a1a;
+  --borda-rodape: #e9e4dc;
   --carvao: #2B2420;
   --fundo-app: #F5F2EF;
   --borda: #E2DCD5;
@@ -12,7 +15,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: 'Montserrat', 'Nunito Sans', sans-serif;
   background-color: var(--fundo-app);
   color: var(--carvao);
   display: flex;
@@ -184,99 +187,135 @@ body {
 .approvals-list li.rejected { border-left-color: var(--terracota); }
 .empty-msg { border-left: none !important; color: #888; font-style: italic; }
 
-/* FOLHA A4 */
+/* FOLHA A4 — IDENTIDADE DO MODELO ATA.DOCX.HTML */
 .page-wrapper { flex: 1; display: flex; justify-content: center; }
 
 .a4-sheet {
   width: 210mm;
   min-height: 297mm;
-  background: #fff;
+  background: #ffffff;
   box-shadow: 0 4px 20px rgba(58, 23, 0, 0.08);
-  padding: 18mm 20mm;
+  padding: 25mm 25mm 22mm 25mm;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
+/* CABEÇALHO DO EXEMPLO: LOGO À DIREITA (150x89px) + BORDA INFERIOR #e76f2a */
 .letterhead-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 12px;
+  text-align: right;
+  border-bottom: 1.5pt solid var(--laranja-timbre);
+  padding-bottom: 8pt;
+  margin-bottom: 22pt;
 }
 
-.fallback-logo { display: flex; align-items: center; gap: 10px; }
-.logo-badge {
-  background: var(--laranja);
-  color: #fff;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-.logo-title { font-family: 'Fredoka', sans-serif; font-size: 1.5rem; color: var(--marrom-cafe); display: block; line-height: 1; }
-.logo-subtitle { font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; color: var(--terracota); }
-
-.header-meta { text-align: right; }
-.company-name { font-family: 'Fredoka', sans-serif; color: var(--marrom-cafe); font-size: 1rem; }
-.tagline { font-size: 0.78rem; color: #6E6259; font-style: italic; }
-
-.header-accent-bar {
-  height: 4px;
-  background: linear-gradient(90deg, var(--terracota) 0%, var(--laranja) 65%, var(--dourado) 100%);
-  border-radius: 2px;
-  margin-bottom: 24px;
+.header-logo {
+  width: 150px;
+  height: 89px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: bottom;
 }
 
+/* CORPO DO DOCUMENTO EM MONTSERRAT */
 .document-body {
   flex: 1;
   outline: none;
+  font-family: 'Montserrat', sans-serif;
   font-size: 11pt;
-  line-height: 1.6;
+  line-height: 1.55;
+  color: #000000;
 }
 
 .document-body[contenteditable="false"] {
   cursor: default;
 }
 
-.document-body h1 { font-family: 'Fredoka', sans-serif; color: var(--marrom-cafe); font-size: 18pt; margin-bottom: 12px; }
-.document-body h2 { font-family: 'Fredoka', sans-serif; color: var(--terracota); font-size: 14pt; margin: 16px 0 8px; }
-.document-body p { margin-bottom: 10px; }
-.document-body ul, .document-body ol { margin-left: 24px; margin-bottom: 12px; }
+.document-body h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--marrom-cafe);
+  font-size: 16pt;
+  margin-bottom: 12pt;
+}
 
+.document-body h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--laranja-timbre);
+  font-size: 13pt;
+  margin: 14pt 0 6pt;
+}
+
+.document-body p { margin-bottom: 8pt; }
+.document-body ul, .document-body ol { margin-left: 22pt; margin-bottom: 10pt; }
+
+/* CARIMBOS DE APROVAÇÃO */
 .doc-stamps {
-  margin-top: 20px;
+  margin-top: 16pt;
+  margin-bottom: 12pt;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8pt;
 }
 
 .stamp-box {
   border: 1.5px solid var(--verde);
   color: var(--verde);
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 8.5pt;
   font-weight: 700;
   background: #F4FBF4;
 }
 
+/* RODAPÉ DO EXEMPLO: BORDA SUPERIOR #e9e4dc + DADOS À ESQUERDA + PATA 70x69px */
 .letterhead-footer {
-  margin-top: 24px;
-  text-align: center;
-  font-size: 8.5pt;
-  color: #6E6259;
+  margin-top: 24pt;
+  border-top: 0.8pt solid var(--borda-rodape);
+  padding-top: 8pt;
 }
 
-.footer-line { height: 1.5px; background-color: var(--laranja); margin-bottom: 8px; opacity: 0.5; }
-.footer-company { color: var(--marrom-cafe); }
+.footer-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer-info-block {
+  text-align: left;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-company {
+  color: var(--laranja-timbre);
+  font-size: 8pt;
+  font-weight: 700;
+  margin-bottom: 2pt;
+}
+
+.footer-contact {
+  color: var(--marrom-rodape);
+  font-size: 8pt;
+  line-height: 1.3;
+  margin-bottom: 1pt;
+}
+
+.footer-paw {
+  width: 70px;
+  height: 69px;
+  object-fit: contain;
+}
 
 @media print {
   body { background: #fff; }
   .no-print { display: none !important; }
   .workspace { padding: 0; margin: 0; }
-  .a4-sheet { box-shadow: none; width: 100%; min-height: 100vh; padding: 15mm 18mm; }
+  .a4-sheet {
+    box-shadow: none;
+    width: 100%;
+    min-height: 100vh;
+    padding: 22mm 22mm 18mm 22mm;
+  }
 }
