@@ -200,9 +200,44 @@ function execCmd(command, value = null) {
   transmitirEstado();
 }
 
-function copiarLinkConvite() {
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link da sala copiado! Envia este link à 2.ª pessoa para entrar como Visualizador/Aprovador:\n\n" + window.location.href);
+function abrirDialogoConvite() {
+  const dialog = document.getElementById("inviteDialog");
+  const inviteUrl = window.location.href;
+  const qrContainer = document.getElementById("inviteQrCode");
+  const status = document.getElementById("inviteStatus");
+
+  document.getElementById("inviteLink").value = inviteUrl;
+  qrContainer.replaceChildren();
+  status.textContent = "";
+  dialog.showModal();
+
+  if (typeof QRCode === "undefined") {
+    status.textContent = "Não foi possível carregar o gerador do QR Code. Pode partilhar o link acima.";
+    return;
+  }
+
+  new QRCode(qrContainer, {
+    text: inviteUrl,
+    width: 220,
+    height: 220,
+    colorDark: "#3A1700",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+async function copiarLinkConvite() {
+  const inviteLink = document.getElementById("inviteLink");
+  const status = document.getElementById("inviteStatus");
+
+  try {
+    await navigator.clipboard.writeText(inviteLink.value);
+    status.textContent = "Link copiado. Envie-o ao aprovador.";
+  } catch (error) {
+    inviteLink.focus();
+    inviteLink.select();
+    status.textContent = "Não foi possível copiar automaticamente. Selecione e copie o link acima.";
+  }
 }
 
 function exportarPDF() {

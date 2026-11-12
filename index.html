@@ -7,8 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Biblioteca leve MQTT sobre WebSocket (sem backend/sem API key) -->
+  <!-- Bibliotecas leves para colaboração e geração local do QR Code -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -26,10 +27,27 @@
     </div>
 
     <div class="toolbar-actions">
-      <button onclick="copiarLinkConvite()" class="btn btn-outline">🔗 Convidar Aprovador</button>
+      <button onclick="abrirDialogoConvite()" class="btn btn-outline">🔗 Convidar Aprovador</button>
       <button onclick="exportarPDF()" class="btn btn-accent">📄 Exportar PDF</button>
     </div>
   </header>
+
+  <dialog id="inviteDialog" class="invite-dialog no-print" aria-labelledby="inviteDialogTitle">
+    <div class="invite-dialog-header">
+      <h2 id="inviteDialogTitle">Convidar Aprovador</h2>
+      <form method="dialog">
+        <button type="submit" class="invite-close" aria-label="Fechar">×</button>
+      </form>
+    </div>
+    <p>Leia o QR Code ou partilhe este link para aceder à sala como aprovador.</p>
+    <div id="inviteQrCode" class="invite-qr-code" role="img" aria-label="QR Code com o link de acesso"></div>
+    <label for="inviteLink">Link de acesso</label>
+    <div class="invite-link-row">
+      <input id="inviteLink" type="text" readonly />
+      <button type="button" class="btn btn-accent" onclick="copiarLinkConvite()">Copiar link</button>
+    </div>
+    <p id="inviteStatus" class="invite-status" aria-live="polite"></p>
+  </dialog>
 
   <!-- BARRA DE FORMATAÇÃO (VISÍVEL APENAS PARA A 1ª PESSOA / EDITORA) -->
   <div id="editorToolbar" class="format-bar no-print">
