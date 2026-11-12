@@ -302,12 +302,20 @@ body {
 .approvals-list li.rejected { border-left-color: var(--terracota); }
 .empty-msg { border-left: none !important; color: #888; font-style: italic; }
 
-/* FOLHA A4 — IDENTIDADE DO MODELO ATA.DOCX.HTML */
-.page-wrapper { flex: 1; display: flex; justify-content: center; }
+/* FOLHAS A4 — IDENTIDADE DO MODELO ATA.DOCX.HTML */
+.page-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
 
 .a4-sheet {
   width: 210mm;
+  height: 297mm;
   min-height: 297mm;
+  flex: none;
   background: #ffffff;
   box-shadow: 0 4px 20px rgba(58, 23, 0, 0.08);
   padding: 20mm 25mm 22mm 20mm;
@@ -336,6 +344,8 @@ body {
 /* CORPO DO DOCUMENTO EM MONTSERRAT */
 .document-body {
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
   outline: none;
   font-family: 'Montserrat', sans-serif;
   font-size: 11pt;
@@ -375,6 +385,8 @@ body {
   gap: 8pt;
 }
 
+.doc-stamps:empty { display: none; }
+
 .stamp-box {
   border: 1.5px solid var(--verde);
   color: var(--verde);
@@ -387,7 +399,7 @@ body {
 
 /* RODAPÉ DO EXEMPLO: BORDA SUPERIOR #e9e4dc + DADOS À ESQUERDA + PATA 70x69px */
 .letterhead-footer {
-  margin-top: 24pt;
+  margin-top: 16pt;
   border-top: 0.8pt solid var(--borda-rodape);
   padding-top: 8pt;
 }
@@ -426,13 +438,18 @@ body {
 @media print {
   body { background: #fff; }
   .no-print { display: none !important; }
-  .workspace { padding: 0; margin: 0; }
+  .workspace { display: block; padding: 0; margin: 0; }
+  .page-wrapper { display: block; }
   .a4-sheet {
     box-shadow: none;
+    break-after: page;
+    page-break-after: always;
     width: 100%;
-    min-height: 100vh;
+    height: 297mm;
+    min-height: 297mm;
     padding: 22mm 22mm 18mm 22mm;
   }
+  .a4-sheet:last-child { break-after: auto; page-break-after: auto; }
 }
 
 @media (max-width: 480px) {

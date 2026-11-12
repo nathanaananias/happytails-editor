@@ -63,7 +63,7 @@ client.on("message", (receivedTopic, payload) => {
   // 3. Atualização do conteúdo do documento (vinda da Editora)
   if (msg.type === "DOC_UPDATE" && myRole === "approver") {
     document.getElementById("docTitle").value = msg.title;
-    document.getElementById("editor").innerHTML = msg.content;
+    definirConteudoDocumento(msg.content);
   }
 
   // 4. Nova aprovação ou pedido de revisão
@@ -98,12 +98,12 @@ function determinarPapel() {
     document.getElementById("approverBar").style.display = "none";
     document.getElementById("approverNameGate").style.display = "none";
     editorDiv.setAttribute("contenteditable", "true");
-    editorDiv.innerHTML = `
+    definirConteudoDocumento(`
       <h1>ATA DE REUNIÃO</h1>
       <p><strong>Data:</strong> ${new Date().toLocaleDateString('pt-PT')} &nbsp;|&nbsp; <strong>Local:</strong> Coimbra</p>
       <p><br></p>
       <p>Escreva aqui o texto da ata. As outras pessoas que abrirem o link vão acompanhar em direto...</p>
-    `;
+    `);
   } else {
     badge.textContent = "👥 Participante";
     badge.className = "badge badge-approver";
@@ -132,13 +132,190 @@ function alternarBarraLateral() {
     : "Mostrar estado da sessão e aprovações";
 }
 
+function definirConteudoDocumento(html) {
+  const sheets = document.querySelectorAll(".a4-sheet");
+  const firstSheet = sheets[0];
+  const stampArea = document.getElementById("docApprovalsStamp");
+
+  Array.from(sheets).slice(1).forEach(sheet => sheet.remove());
+  moverCarimbosParaPagina(stampArea, firstSheet);
+  document.getElementById("editor").innerHTML = html;
+  paginarDocumento();
+}
+
+function criarPaginaDocumento() {
+  const pageWrapper = document.querySelector(".page-wrapper");
+  const firstSheet = pageWrapper.querySelector(".a4-sheet");
+  const newSheet = firstSheet.cloneNode(true);
+  const body = newSheet.querySelector(".document-body");
+  const firstBody = document.getElementById("editor");
+
+  body.removeAttribute("id");
+  body.innerHTML = "";
+  body.setAttribute("contenteditable", firstBody.getAttribute("contenteditable"));
+  body.setAttribute("oninput", "transmitirEstado()");
+  let stampPlaceholder = newSheet.querySelector(".doc-stamps");
+  if (!stampPlaceholder) {
+    stampPlaceholder = document.createElement("div");
+    stampPlaceholder.className = "doc-stamps";
+    newSheet.insertBefore(stampPlaceholder, newSheet.querySelector(".letterhead-footer"));
+  }
+  stampPlaceholder.removeAttribute("id");
+  stampPlaceholder.innerHTML = "";
+  pageWrapper.appendChild(newSheet);
+  return body;
+}
+
+function moverCarimbosParaPagina(stampArea, sheet) {
+  let placeholder = sheet.querySelector(".doc-stamps");
+  if (!placeholder) {
+    placeholder = document.createElement("div");
+    placeholder.className = "doc-stamps";
+    sheet.insertBefore(placeholder, sheet.querySelector(".letterhead-footer"));
+  }
+  if (placeholder === stampArea) return;
+
+  if (stampArea.parentNode) {
+    const emptyArea = document.createElement("div");
+    emptyArea.className = "doc-stamps";
+    stampArea.parentNode.replaceChild(emptyArea, stampArea);
+  }
+  placeholder.replaceWith(stampArea);
+}
+
+function dividirBlocoExcedente(body) {
+  const block = body.querySelector(":scope > :last-child");
+  if (!block) return false;
+
+  const pageBottom = body.getBoundingClientRect().bottom -
+    parseFloat(getComputedStyle(block).marginBottom) - 2;
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  let splitNode = null;
+  let splitOffset = 0;
+  let textNode;
+
+  while ((textNode = walker.nextNode()) && !splitNode) {
+    const words = /\S+/g;
+    let word;
+    while ((word = words.exec(textNode.textContent))) {
+      const range = document.createRange();
+      range.setStart(textNode, word.index);
+      range.setEnd(textNode, word.index + word[0].length);
+      if (range.getBoundingClientRect().bottom > pageBottom) {
+        splitNode = textNode;
+        splitOffset = word.index;
+        break;
+      }
+    }
+  }
+
+  if (!splitNode) return false;
+
+  const splitRange = document.createRange();
+  splitRange.setStart(splitNode, splitOffset);
+  splitRange.setEndAfter(block.lastChild);
+  const selection = window.getSelection();
+  const moveCaret = selection && selection.rangeCount &&
+    block.contains(selection.focusNode) &&
+    splitRange.comparePoint(selection.focusNode, selection.focusOffset) >= 0;
+  const continuationContent = splitRange.extractContents();
+  if (!continuationContent.textContent.trim()) return false;
+
+  const continuation = block.cloneNode(false);
+  continuation.appendChild(continuationContent);
+  body.appendChild(continuation);
+
+  if (moveCaret) {
+    const caret = document.createRange();
+    caret.selectNodeContents(continuation);
+    caret.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(caret);
+  }
+  return true;
+}
+
+function paginarDocumento() {
+  const pageWrapper = document.querySelector(".page-wrapper");
+  const stampArea = document.getElementById("docApprovalsStamp");
+  const wasEditing = document.activeElement.classList.contains("document-body");
+  let sheets = Array.from(pageWrapper.querySelectorAll(".a4-sheet"));
+  let hasOverflow;
+
+  do {
+    moverCarimbosParaPagina(stampArea, sheets[sheets.length - 1]);
+    hasOverflow = false;
+
+    for (let index = 0; index < sheets.length; index += 1) {
+      const body = sheets[index].querySelector(".document-body");
+      while (body.scrollHeight > body.clientHeight) {
+        const contentNodes = Array.from(body.childNodes).filter(node =>
+          node.nodeType !== Node.TEXT_NODE || node.textContent.trim()
+        );
+        if (contentNodes.length === 1 && dividirBlocoExcedente(body)) {
+          hasOverflow = true;
+          continue;
+        }
+        if (contentNodes.length < 2) break;
+
+        let nextSheet = sheets[index + 1];
+        if (!nextSheet) {
+          criarPaginaDocumento();
+          sheets = Array.from(pageWrapper.querySelectorAll(".a4-sheet"));
+          nextSheet = sheets[index + 1];
+        }
+
+        const nextBody = nextSheet.querySelector(".document-body");
+        const overflowNode = contentNodes[contentNodes.length - 1];
+        const selection = window.getSelection();
+        const cursor = wasEditing && selection && selection.rangeCount &&
+          overflowNode.contains(selection.focusNode)
+          ? { node: selection.focusNode, offset: selection.focusOffset }
+          : null;
+
+        nextBody.insertBefore(overflowNode, nextBody.firstChild);
+        if (cursor && cursor.node.isConnected) {
+          nextBody.focus();
+          const caret = document.createRange();
+          const maxOffset = cursor.node.nodeType === Node.TEXT_NODE
+            ? cursor.node.length
+            : cursor.node.childNodes.length;
+          caret.setStart(cursor.node, Math.min(cursor.offset, maxOffset));
+          caret.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(caret);
+        }
+        hasOverflow = true;
+      }
+    }
+
+    sheets = Array.from(pageWrapper.querySelectorAll(".a4-sheet"));
+  } while (hasOverflow);
+
+  while (sheets.length > 1 && !sheets[sheets.length - 1].querySelector(".document-body").hasChildNodes()) {
+    sheets.pop().remove();
+  }
+  moverCarimbosParaPagina(stampArea, sheets[sheets.length - 1]);
+
+  if (wasEditing) {
+    const selection = window.getSelection();
+    const focusedBody = selection && selection.anchorNode &&
+      Array.from(pageWrapper.querySelectorAll(".document-body"))
+        .find(body => body.contains(selection.anchorNode));
+    if (focusedBody && document.activeElement !== focusedBody) focusedBody.focus();
+  }
+}
+
 // Envia o texto escrito pela Editora em tempo real
 function transmitirEstado() {
   if (myRole !== "editor") return;
+  paginarDocumento();
   publicarMensagem({
     type: "DOC_UPDATE",
     title: document.getElementById("docTitle").value,
-    content: document.getElementById("editor").innerHTML
+    content: Array.from(document.querySelectorAll(".page-wrapper .document-body"))
+      .map(body => body.innerHTML)
+      .join("")
   });
 }
 
