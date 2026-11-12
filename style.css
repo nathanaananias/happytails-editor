@@ -262,6 +262,8 @@ body {
   gap: 24px;
 }
 
+.sidebar-toggle { display: none; }
+
 .sidebar {
   width: 280px;
   background: #fff;
@@ -437,4 +439,30 @@ body {
   .invite-dialog { padding: 20px; }
   .invite-link-row { flex-direction: column; }
   .invite-link-row .btn { align-self: flex-start; }
+}
+
+@media (max-width: 1140px) {
+  .sidebar { display: none; }
+  .workspace {
+    flex-direction: column;
+    min-width: 0;
+    padding: 12px;
+    gap: 0;
+  }
+  .sidebar-toggle {
+    display: inline-flex;
+    align-self: flex-start;
+    margin-bottom: 12px;
+  }
+  .workspace.show-sidebar .sidebar {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .page-wrapper { min-width: 0; width: 100%; }
+  .a4-sheet {
+    width: 100%;
+    min-width: 0;
+    padding: 14mm 12mm;
+  }
 }

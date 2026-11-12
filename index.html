@@ -18,7 +18,7 @@
   <header class="toolbar no-print">
     <div class="toolbar-brand">
       <span class="brand-dot"></span>
-      <strong>Happy Tails</strong> <small>Protótipo WebSocket</small>
+      <strong>Happy Tails</strong>
     </div>
 
     <div class="session-info">
@@ -27,19 +27,19 @@
     </div>
 
     <div class="toolbar-actions">
-      <button onclick="abrirDialogoConvite()" class="btn btn-outline">🔗 Convidar Aprovador</button>
+      <button onclick="abrirDialogoConvite()" class="btn btn-outline">🔗 Convidar Participante</button>
       <button onclick="exportarPDF()" class="btn btn-accent">📄 Exportar PDF</button>
     </div>
   </header>
 
   <dialog id="inviteDialog" class="invite-dialog no-print" aria-labelledby="inviteDialogTitle">
     <div class="invite-dialog-header">
-      <h2 id="inviteDialogTitle">Convidar Aprovador</h2>
+      <h2 id="inviteDialogTitle">Convidar Participante</h2>
       <form method="dialog">
         <button type="submit" class="invite-close" aria-label="Fechar">×</button>
       </form>
     </div>
-    <p>Leia o QR Code ou partilhe este link para aceder à sala como aprovador.</p>
+    <p>Leia o QR Code ou partilhe este link para aceder à sala como participante.</p>
     <div id="inviteQrCode" class="invite-qr-code" role="img" aria-label="QR Code com o link de acesso"></div>
     <label for="inviteLink">Link de acesso</label>
     <div class="invite-link-row">
@@ -72,11 +72,11 @@
     </div>
   </div>
 
-  <!-- BARRA DE APROVAÇÃO (VISÍVEL APENAS PARA VISUALIZADORES / APROVADORES) -->
+  <!-- BARRA DE APROVAÇÃO (VISÍVEL APENAS PARA Participantes) -->
   <div id="approverBar" class="approver-bar no-print" style="display: none;">
     <div class="approver-inputs">
       <strong>Modo Visualização e Aprovação:</strong>
-      <input type="text" id="approverName" aria-label="Nome do aprovador" readonly />
+      <input type="text" id="approverName" aria-label="Nome do Participante" readonly />
       <input type="text" id="approverNote" placeholder="Nota opcional..." />
     </div>
     <div class="approver-actions">
@@ -86,7 +86,7 @@
   </div>
 
   <div id="approverNameGate" class="approver-name-gate" style="display: none;">
-    <form class="approver-name-card" onsubmit="return confirmarNomeAprovador(event)">
+    <form class="approver-name-card" onsubmit="return confirmarNomeParticipante(event)">
       <h1>Antes de continuar</h1>
       <p>Informe o seu nome para visualizar e aprovar este documento.</p>
       <label for="approverNameEntry">O seu nome</label>
@@ -97,9 +97,17 @@
 
   <!-- ÁREA PRINCIPAL -->
   <main class="workspace">
-    
+    <button
+      id="sidebarToggle"
+      class="sidebar-toggle btn btn-accent no-print"
+      type="button"
+      aria-expanded="false"
+      aria-controls="sessionSidebar"
+      onclick="alternarBarraLateral()"
+    >Mostrar estado da sessão e aprovações</button>
+
     <!-- PAINEL LATERAL: ESTADO DA SESSÃO E APROVAÇÕES -->
-    <aside class="sidebar no-print">
+    <aside id="sessionSidebar" class="sidebar no-print">
       <h3>Sala em Tempo Real</h3>
       <p class="room-code">Sala: <strong id="roomDisplay"></strong></p>
       <p class="sync-status" id="wsStatus">A conectar ao WebSocket...</p>

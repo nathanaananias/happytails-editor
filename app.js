@@ -79,7 +79,7 @@ client.on("message", (receivedTopic, payload) => {
   }
 });
 
-// Decide quem é a 1ª pessoa (Editora) e quem são as seguintes (Visualizador/Aprovador)
+// Decide quem é a 1ª pessoa (Editora) e quem são as seguintes (Participantes)
 function determinarPapel() {
   const sortedIds = Object.keys(activePeers).sort((a, b) => activePeers[a] - activePeers[b]);
   const firstPersonId = sortedIds[0];
@@ -105,7 +105,7 @@ function determinarPapel() {
       <p>Escreva aqui o texto da ata. As outras pessoas que abrirem o link vão acompanhar em direto...</p>
     `;
   } else {
-    badge.textContent = "👁️ Visualizador & Aprovador";
+    badge.textContent = "👥 Participante";
     badge.className = "badge badge-approver";
     document.getElementById("editorToolbar").style.display = "none";
     document.getElementById("approverBar").style.display = "flex";
@@ -120,6 +120,18 @@ function atualizarContadorOnline() {
   document.getElementById("usersCount").textContent = `👥 ${total} online`;
 }
 
+function alternarBarraLateral() {
+  const workspace = document.querySelector(".workspace");
+  const toggle = document.getElementById("sidebarToggle");
+  const mostrar = toggle.getAttribute("aria-expanded") !== "true";
+
+  workspace.classList.toggle("show-sidebar", mostrar);
+  toggle.setAttribute("aria-expanded", String(mostrar));
+  toggle.textContent = mostrar
+    ? "Ocultar estado da sessão e aprovações"
+    : "Mostrar estado da sessão e aprovações";
+}
+
 // Envia o texto escrito pela Editora em tempo real
 function transmitirEstado() {
   if (myRole !== "editor") return;
@@ -130,7 +142,7 @@ function transmitirEstado() {
   });
 }
 
-// Envia decisão do Visualizador/Aprovador
+// Envia decisão do Participante
 function enviarDecisao(status) {
   const nome = document.getElementById("approverName").value.trim();
   if (!nome) return;
@@ -147,7 +159,7 @@ function enviarDecisao(status) {
   document.getElementById("approverNote").value = "";
 }
 
-function confirmarNomeAprovador(event) {
+function confirmarNomeParticipante(event) {
   event.preventDefault();
   const nome = document.getElementById("approverNameEntry").value.trim();
   if (!nome) {
@@ -232,7 +244,7 @@ async function copiarLinkConvite() {
 
   try {
     await navigator.clipboard.writeText(inviteLink.value);
-    status.textContent = "Link copiado. Envie-o ao aprovador.";
+    status.textContent = "Link copiado. Envie-o ao participante.";
   } catch (error) {
     inviteLink.focus();
     inviteLink.select();
