@@ -58,13 +58,23 @@
   <div id="approverBar" class="approver-bar no-print" style="display: none;">
     <div class="approver-inputs">
       <strong>Modo Visualização e Aprovação:</strong>
-      <input type="text" id="approverName" placeholder="O teu nome (ex: Flávia Ferraz)" />
+      <input type="text" id="approverName" aria-label="Nome do aprovador" readonly />
       <input type="text" id="approverNote" placeholder="Nota opcional..." />
     </div>
     <div class="approver-actions">
       <button onclick="enviarDecisao('APROVADO')" class="btn btn-approve">✅ Aprovar Documento</button>
       <button onclick="enviarDecisao('REVISÃO PEDIDA')" class="btn btn-reject">⚠️ Pedir Alteração</button>
     </div>
+  </div>
+
+  <div id="approverNameGate" class="approver-name-gate" style="display: none;">
+    <form class="approver-name-card" onsubmit="return confirmarNomeAprovador(event)">
+      <h1>Antes de continuar</h1>
+      <p>Informe o seu nome para visualizar e aprovar este documento.</p>
+      <label for="approverNameEntry">O seu nome</label>
+      <input type="text" id="approverNameEntry" placeholder="Ex.: Flávia Ferraz" autocomplete="name" required />
+      <button type="submit" class="btn btn-accent">Continuar para o documento</button>
+    </form>
   </div>
 
   <!-- ÁREA PRINCIPAL -->

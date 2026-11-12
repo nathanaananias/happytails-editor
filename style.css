@@ -111,6 +111,48 @@ body {
   border-bottom: 2px solid var(--laranja);
 }
 
+.approver-name-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--fundo-app);
+}
+
+.approver-name-card {
+  width: min(100%, 440px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(58, 23, 0, 0.08);
+}
+
+.approver-name-card h1 {
+  font-family: 'Fredoka', sans-serif;
+  color: var(--marrom-cafe);
+  font-size: 1.5rem;
+}
+
+.approver-name-card p { line-height: 1.5; }
+
+.approver-name-card label { font-weight: 700; }
+
+.approver-name-card input {
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.approver-name-card .btn { align-self: flex-start; }
+
 .approver-inputs {
   display: flex;
   flex-wrap: wrap;
@@ -195,7 +237,7 @@ body {
   min-height: 297mm;
   background: #ffffff;
   box-shadow: 0 4px 20px rgba(58, 23, 0, 0.08);
-  padding: 25mm 25mm 22mm 25mm;
+  padding: 20mm 25mm 22mm 20mm;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

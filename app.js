@@ -96,6 +96,7 @@ function determinarPapel() {
     badge.className = "badge badge-editor";
     document.getElementById("editorToolbar").style.display = "flex";
     document.getElementById("approverBar").style.display = "none";
+    document.getElementById("approverNameGate").style.display = "none";
     editorDiv.setAttribute("contenteditable", "true");
     editorDiv.innerHTML = `
       <h1>ATA DE REUNIÃO</h1>
@@ -108,7 +109,9 @@ function determinarPapel() {
     badge.className = "badge badge-approver";
     document.getElementById("editorToolbar").style.display = "none";
     document.getElementById("approverBar").style.display = "flex";
+    document.getElementById("approverNameGate").style.display = "flex";
     editorDiv.setAttribute("contenteditable", "false");
+    document.getElementById("approverNameEntry").focus();
   }
 }
 
@@ -129,7 +132,8 @@ function transmitirEstado() {
 
 // Envia decisão do Visualizador/Aprovador
 function enviarDecisao(status) {
-  const nome = document.getElementById("approverName").value.trim() || "Aprovador Anónimo";
+  const nome = document.getElementById("approverName").value.trim();
+  if (!nome) return;
   const nota = document.getElementById("approverNote").value.trim();
 
   const registo = {
@@ -141,6 +145,19 @@ function enviarDecisao(status) {
 
   publicarMensagem({ type: "APPROVAL", data: registo });
   document.getElementById("approverNote").value = "";
+}
+
+function confirmarNomeAprovador(event) {
+  event.preventDefault();
+  const nome = document.getElementById("approverNameEntry").value.trim();
+  if (!nome) {
+    document.getElementById("approverNameEntry").focus();
+    return false;
+  }
+
+  document.getElementById("approverName").value = nome;
+  document.getElementById("approverNameGate").style.display = "none";
+  return false;
 }
 
 function renderizarAprovacoes() {
