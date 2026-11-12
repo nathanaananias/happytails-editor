@@ -183,6 +183,14 @@ function moverCarimbosParaPagina(stampArea, sheet) {
   placeholder.replaceWith(stampArea);
 }
 
+function atualizarNumeracaoPaginas(sheets) {
+  sheets.forEach((sheet, index) => {
+    const number = sheet.querySelector(".page-number");
+    number.textContent = `${index + 1}/${sheets.length}`;
+    number.setAttribute("aria-label", `Página ${index + 1} de ${sheets.length}`);
+  });
+}
+
 function dividirBlocoExcedente(body) {
   const block = body.querySelector(":scope > :last-child");
   if (!block) return false;
@@ -296,6 +304,7 @@ function paginarDocumento() {
     sheets.pop().remove();
   }
   moverCarimbosParaPagina(stampArea, sheets[sheets.length - 1]);
+  atualizarNumeracaoPaginas(sheets);
 
   if (wasEditing) {
     const selection = window.getSelection();
