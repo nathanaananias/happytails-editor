@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Tails Smart — Protótipo Colaborativo (WebSocket)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Biblioteca leve MQTT sobre WebSocket (sem backend/sem API key) -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <header class="toolbar no-print">
+    <div class="toolbar-brand">
+      <span class="brand-dot"></span>
+      <strong>Happy Tails</strong> <small>Protótipo WebSocket</small>
+    </div>
+
+    <div class="session-info">
+      <span id="roleBadge" class="badge badge-wait">A ligar...</span>
+      <span id="usersCount" class="users-pill">👥 1 online</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <button onclick="copiarLinkConvite()" class="btn btn-outline">🔗 Convidar Aprovador</button>
+      <button onclick="exportarPDF()" class="btn btn-accent">📄 Exportar PDF</button>
+    </div>
+  </header>
+
+  <!-- BARRA DE FORMATAÇÃO (VISÍVEL APENAS PARA A 1ª PESSOA / EDITORA) -->
+  <div id="editorToolbar" class="format-bar no-print">
+    <input type="text" id="docTitle" value="Ata de Reunião — Happy Tails" oninput="transmitirEstado()" />
+    
+    <div class="format-buttons">
+      <select onchange="execCmd('formatBlock', this.value)">
+        <option value="P">Texto Normal</option>
+        <option value="H1">Título (H1)</option>
+        <option value="H2">Subtítulo (H2)</option>
+      </select>
+      <button onclick="execCmd('bold')"><b>B</b></button>
+      <button onclick="execCmd('italic')"><i>I</i></button>
+      <button onclick="execCmd('underline')"><u>U</u></button>
+      <span class="divider"></span>
+      <button onclick="execCmd('justifyLeft')">⬅</button>
+      <button onclick="execCmd('justifyCenter')">↔</button>
+      <button onclick="execCmd('justifyFull')">☰</button>
+      <span class="divider"></span>
+      <button onclick="execCmd('insertUnorderedList')">• Lista</button>
+      <button onclick="execCmd('insertOrderedList')">1. Lista</button>
+    </div>
+  </div>
+
+  <!-- BARRA DE APROVAÇÃO (VISÍVEL APENAS PARA VISUALIZADORES / APROVADORES) -->
+  <div id="approverBar" class="approver-bar no-print" style="display: none;">
+    <div class="approver-inputs">
+      <strong>Modo Visualização e Aprovação:</strong>
+      <input type="text" id="approverName" placeholder="O teu nome (ex: Flávia Ferraz)" />
+      <input type="text" id="approverNote" placeholder="Nota opcional..." />
+    </div>
+    <div class="approver-actions">
+      <button onclick="enviarDecisao('APROVADO')" class="btn btn-approve">✅ Aprovar Documento</button>
+      <button onclick="enviarDecisao('REVISÃO PEDIDA')" class="btn btn-reject">⚠️ Pedir Alteração</button>
+    </div>
+  </div>
+
+  <!-- ÁREA PRINCIPAL -->
+  <main class="workspace">
+    
+    <!-- PAINEL LATERAL: ESTADO DA SESSÃO E APROVAÇÕES -->
+    <aside class="sidebar no-print">
+      <h3>Sala em Tempo Real</h3>
+      <p class="room-code">Sala: <strong id="roomDisplay"></strong></p>
+      <p class="sync-status" id="wsStatus">A conectar ao WebSocket...</p>
+
+      <hr class="side-divider" />
+
+      <h3>Registo de Aprovações</h3>
+      <ul id="approvalsList" class="approvals-list">
+        <li class="empty-msg">Nenhuma aprovação registada ainda.</li>
+      </ul>
+    </aside>
+
+    <!-- FOLHA A4 TIMBRADA -->
+    <section class="page-wrapper">
+      <div class="a4-sheet">
+        
+        <!-- CABEÇALHO -->
+        <div class="letterhead-header">
+          <div class="logo-area">
+            <img src="logo-happytails.png" alt="Happy Tails" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';" />
+            <div id="fallbackLogo" class="fallback-logo">
+              <div class="logo-badge">🐾</div>
+              <div>
+                <span class="logo-title">Happy Tails</span>
+                <span class="logo-subtitle">CRECHE CANINA INTELIGENTE</span>
+              </div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <p class="company-name">Happy Tails Smart, Lda.</p>
+            <p class="tagline">Sempre perto do seu melhor amigo, onde quer que esteja</p>
+          </div>
+        </div>
+
+        <div class="header-accent-bar"></div>
+
+        <!-- CORPO DO DOCUMENTO -->
+        <div id="editor" class="document-body" contenteditable="false" oninput="transmitirEstado()">
+          <h1>ATA DE REUNIÃO</h1>
+          <p><strong>Data:</strong> 13 de novembro de 2026 &nbsp;|&nbsp; <strong>Local:</strong> Coimbra</p>
+          <p><br></p>
+          <p>Aguardando redação...</p>
+        </div>
+
+        <!-- CARIMBOS DE APROVAÇÃO NO DOCUMENTO -->
+        <div id="docApprovalsStamp" class="doc-stamps"></div>
+
+        <!-- RODAPÉ -->
+        <footer class="letterhead-footer">
+          <div class="footer-line"></div>
+          <p class="footer-company"><strong>Happy Tails Smart, Lda.</strong></p>
+          <p class="footer-contacts">
+            happytails.smart@gmail.com &nbsp;|&nbsp; Coimbra, Portugal
+          </p>
+        </footer>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+:root {
+  --laranja: #F2811D;
+  --terracota: #E2481A;
+  --dourado: #F7A21C;
+  --marrom-cafe: #3A1700;
+  --carvao: #2B2420;
+  --fundo-app: #F5F2EF;
+  --borda: #E2DCD5;
+  --verde: #2E7D32;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background-color: var(--fundo-app);
+  color: var(--carvao);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* TOOLBAR */
+.toolbar {
+  background-color: var(--marrom-cafe);
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.toolbar-brand {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-dot {
+  width: 12px;
+  height: 12px;
+  background-color: var(--laranja);
+  border-radius: 50%;
+}
+
+.session-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge-editor { background: var(--laranja); color: #fff; }
+.badge-approver { background: var(--dourado); color: var(--marrom-cafe); }
+.badge-wait { background: #666; color: #fff; }
+
+.users-pill {
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.toolbar-actions { display: flex; gap: 10px; }
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-outline { background: transparent; border: 1px solid #fff; color: #fff; }
+.btn-accent { background: var(--terracota); color: #fff; }
+.btn-approve { background: var(--verde); color: #fff; }
+.btn-reject { background: var(--terracota); color: #fff; }
+
+/* BARRA DE FORMATAÇÃO E APROVAÇÃO */
+.format-bar, .approver-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--borda);
+  padding: 10px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.approver-bar {
+  background: #FFF9F2;
+  border-bottom: 2px solid var(--laranja);
+}
+
+.approver-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.approver-inputs input, #docTitle {
+  padding: 7px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+#docTitle { font-weight: 700; width: 300px; color: var(--marrom-cafe); }
+
+.format-buttons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.format-buttons button, .format-buttons select {
+  background: #FAF8F6;
+  border: 1px solid var(--borda);
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.divider { width: 1px; height: 20px; background: var(--borda); }
+
+/* WORKSPACE */
+.workspace {
+  display: flex;
+  flex: 1;
+  max-width: 1380px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  gap: 24px;
+}
+
+.sidebar {
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--borda);
+  height: fit-content;
+}
+
+.sidebar h3 {
+  font-family: 'Fredoka', sans-serif;
+  color: var(--marrom-cafe);
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.room-code { font-size: 0.85rem; margin-bottom: 4px; }
+.sync-status { font-size: 0.78rem; color: var(--verde); font-weight: 600; }
+.side-divider { border: 0; border-top: 1px solid var(--borda); margin: 14px 0; }
+
+.approvals-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.approvals-list li {
+  padding: 10px;
+  border-radius: 8px;
+  background: #FAF8F6;
+  border-left: 4px solid var(--verde);
+  font-size: 0.82rem;
+}
+
+.approvals-list li.rejected { border-left-color: var(--terracota); }
+.empty-msg { border-left: none !important; color: #888; font-style: italic; }
+
+/* FOLHA A4 */
+.page-wrapper { flex: 1; display: flex; justify-content: center; }
+
+.a4-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(58, 23, 0, 0.08);
+  padding: 18mm 20mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.letterhead-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+.fallback-logo { display: flex; align-items: center; gap: 10px; }
+.logo-badge {
+  background: var(--laranja);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.logo-title { font-family: 'Fredoka', sans-serif; font-size: 1.5rem; color: var(--marrom-cafe); display: block; line-height: 1; }
+.logo-subtitle { font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; color: var(--terracota); }
+
+.header-meta { text-align: right; }
+.company-name { font-family: 'Fredoka', sans-serif; color: var(--marrom-cafe); font-size: 1rem; }
+.tagline { font-size: 0.78rem; color: #6E6259; font-style: italic; }
+
+.header-accent-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--terracota) 0%, var(--laranja) 65%, var(--dourado) 100%);
+  border-radius: 2px;
+  margin-bottom: 24px;
+}
+
+.document-body {
+  flex: 1;
+  outline: none;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+
+.document-body[contenteditable="false"] {
+  cursor: default;
+}
+
+.document-body h1 { font-family: 'Fredoka', sans-serif; color: var(--marrom-cafe); font-size: 18pt; margin-bottom: 12px; }
+.document-body h2 { font-family: 'Fredoka', sans-serif; color: var(--terracota); font-size: 14pt; margin: 16px 0 8px; }
+.document-body p { margin-bottom: 10px; }
+.document-body ul, .document-body ol { margin-left: 24px; margin-bottom: 12px; }
+
+.doc-stamps {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stamp-box {
+  border: 1.5px solid var(--verde);
+  color: var(--verde);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #F4FBF4;
+}
+
+.letterhead-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 8.5pt;
+  color: #6E6259;
+}
+
+.footer-line { height: 1.5px; background-color: var(--laranja); margin-bottom: 8px; opacity: 0.5; }
+.footer-company { color: var(--marrom-cafe); }
+
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .workspace { padding: 0; margin: 0; }
+  .a4-sheet { box-shadow: none; width: 100%; min-height: 100vh; padding: 15mm 18mm; }
+}
